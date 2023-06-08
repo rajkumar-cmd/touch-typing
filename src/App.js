@@ -1,5 +1,5 @@
-import './App.css';
 import React from "react";
+import Style from "./App.module.css"
 
 function App() {
   const [pressedKey, setPressedKey] = React.useState(0);
@@ -51,43 +51,38 @@ function App() {
   }, []);
 
   React.useEffect(() => {
-    
     if (pressedKey == sentence[0]) {
       let newSentence = sentence.split("");
       console.log(newSentence)
       newSentence.shift();
       setSentence(newSentence.join(""))
-    }else{
-      setWrongWords((wrongWords)=>wrongWords+1)
+    } else {
+      setWrongWords((wrongWords) => wrongWords + 1)
+      if(totalWords>0){
+        const playBeep = () => {
+          const audio = new Audio('beep-03.mp3');
+          audio.play();
+        };
+        playBeep();
+      }
     }
   }, [totalWords]);
 
   return (
-    <div style={{"backgroundColor":"#FFE79B","height":"100vh"}} className="App">
+    <div className={Style.main}>
       <h1>Touch Typing</h1>
       <h1>Timer: {seconds} seconds</h1>
-      {(seconds === 0) ? (<div style={{
-        "fontSize": "2rem",
-        "border": "3px solid #9336B4",
-        "borderRadius": "10px",
-        "margin": "0px 5rem",
-        "padding": "2rem",
-        "backgroundColor": "#40128B",
-        "color": "#DD58D6"
-      }}>
-        <p>Accuracy:{Math.floor(((totalWords-wrongWords)/totalWords)*100)}%</p>
-        <p>Word Per Min:{totalWords/5}</p>
-      </div>) : (<div style={{
-        "fontSize": "2rem",
-        "border": "3px solid #9336B4",
-        "margin": "0px 5rem",
-        "borderRadius": "10px",
-        "padding": "2rem",
-        "whiteSpace": "nowrap",
-        "overflow": "hidden",
-        "backgroundColor": "#40128B",
-        "color": "#DD58D6"
-      }}>{sentence}</div>)}
+      {(seconds === 0) ? (
+        <div className={Style.result}>
+        {totalWords===0?(
+          <p>Accuracy: 0%</p>
+        ):(
+          <p>Accuracy: {Math.floor(((totalWords - wrongWords) / totalWords) * 100)}%</p>
+        )}
+          
+          <p>Letter Per Min: {totalWords}</p>
+        </div>) : (
+        <div className={Style.text}><span className={Style.cursor}>_</span>{sentence}</div>)}
     </div>
   );
 }
